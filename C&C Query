@@ -1,0 +1,49 @@
+Pick a source type, perhaps a web filter / proxy
+
+We are looking for persistant connections from an internal client to an external web domain or host.  
+
+fx avg(sess_gap), stdev(sess_gap)
+      Average Session   Standard deviation
+
+
+we want to find an average pattern, ie every 15 seconds or so.
+
+
+sorucetype = (web proxy /iboss) 
+| streamstats current=f  last(_time) as next_time by dest    -----> this will calculate the time of the next event to the destination into the current events field, the streamstats command allows you to calculate any statistics of a certain time window then it makes it available as another field, a calculated one in a field panel dynamically so statistical conditions or values in a time window can be applied to analytical condition next with the calculated timestamp between the current and the next even.
+
+We can now calculate the time gap between the connection that each host goes out to an external website or domain.
+
+sorucetype = (web proxy /iboss) 
+| streamstats current=f  last(_time) as next_time by dest 
+| eval gap = next_time - _time 							--------> we use the eval command to calculate the gap between one host connecting to a website or domain, this will add an aditional field called "gap", it will show on the side bar with the connection interval in milliseconds
+
+
+
+sorucetype = (web proxy /iboss) 
+| streamstats current=f  last(_time) as next_time by dest 
+| eval gap = next_time - _time 
+| stats count avg(gap) as avg_gap, var(gap) as var_gap by dest    --------------> this will display the host, the dest the host is connection to, the count of connections with the avg gap between connections and the variance gap.\
+The var_gap indicates how consistent or regular the connections are, so C&C would have a high number of total connections with a short gap between one connection to another and a lower variance of connections intervals that would represent a repeating connection
+
+
+
+sorucetype = (web proxy /iboss) 
+| streamstats current=f  last(_time) as next_time by dest 
+| eval gap = next_time - _time 
+| stats count avg(gap) as avg_gap, var(gap) as var_gap by dest 
+| search avg_gap<50 count>500                                                            ---------> this will search the avg_gap that has a average connection of less than 50 miliseconds and          connections to the same dest greater than 500
+|sort avg_gap                                                                   --------------> this will sort  from the lower avg interval to the higher avg interval, we want to have the shorter average session host on top 
+
+
+
+https://www.youtube.com/watch?v=6hK63_QZVbE&ab_channel=Splunk
+
+
+Full command
+sorucetype = (web proxy /filter) 
+| streamstats current=f  last(_time) as next_time by dest 
+| eval gap = next_time - _time 
+| stats count avg(gap) as avg_gap, var(gap) as var_gap by dest 
+| search avg_gap<50 count>500 
+|sort avg_gap
