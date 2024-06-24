@@ -1,0 +1,1 @@
+index=okta | search  "actor.type"=SystemPrincipal | eval Email=mvindex(split(src_user,"@domain.com"),0)  | rename Email as username  | search username!="system@okta.com" | table  _time, username, body,app,targetUserDisplayName,action,tag
