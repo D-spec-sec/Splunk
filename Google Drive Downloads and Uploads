@@ -1,0 +1,3 @@
+index=gws sourcetype="gws:reports:drive" action IN ("uploaded","downloaded")
+| table _time, action, actor.email, doc_title, doc_type, event.name, src, owner
+| stats count AS cnt by action owner
