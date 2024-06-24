@@ -1,0 +1,3 @@
+index=github sourcetype=httpevent action IN ("repo.transfer","repo.transfer_outgoing")
+| table _time, action, actor, actor_ip, category_type, document_id, repo, repo_was, org, fork_source, new_nwo, new_owner, old_user
+| table _time, action, actor, actor_ip
