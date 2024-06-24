@@ -1,0 +1,1 @@
+index=okta  | eval Email=mvindex(split(src_user,"@domain.com"),0)  | rename Email as username  | search username="*"   result="Group Push - deleting AppGroup*" | table  _time, username,user_identity_tag, body,app,action,client.userAgent.os,securityContext.domain,targetAppAlternateId,client.userAgent.browser,client.geographicalContext.country
