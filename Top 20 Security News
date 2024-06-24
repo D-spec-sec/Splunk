@@ -1,0 +1,3 @@
+Setup an RSS (think krebs on security, etc) then use this: 
+
+index ="rss" sourcetype="rssfeed"  | dedup link| top limit=20 link
