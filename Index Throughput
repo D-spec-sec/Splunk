@@ -1,0 +1,1 @@
+index=_internal source=*license_usage.log type=Usage | stats sum(eval(b/1024/1024/1024)) AS volume_GB by splunk_server date_mday date_month date_year | stats max(volume_GB) by splunk_server date_month date_year
