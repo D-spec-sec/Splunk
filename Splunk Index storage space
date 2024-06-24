@@ -1,0 +1,1 @@
+|dbinspect index=* | stats sum(sizeOnDiskMB) by index
