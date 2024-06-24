@@ -1,0 +1,7 @@
+index=*
+ | fields + user_agent
+ | rex field=user_agent "((?<browser_ff>Firefox\S+)|(?<browser_ie>MSIE [\d\.]+)|(?<browser_opera>Opera)|(?<browser_chrome>Chrome)|(?<browser_safari>Safari)|(?<browser_java>Java\S+)|(?<browser_nagios>nagios\S+)|(?<browser_nessus>[Nn][Ee][Ss][Ss][Uu][Ss])|(?<browser_apache>Apache\S+))"
+ | eval browser_none=if(user_agent=="-","None","")
+ | fillnull value="" browser_ff browser_ie browser_chrome browser_safari browser_opera browser_java browser_nagios browser_nessus broswer_none browser_apache
+ | eval browser = browser_ff.browser_ie.browser_chrome.browser_safari.browser_opera.browser_java.browser_nagios.browser_nessus.browser_none.browser_apache
+ | top 10 browser
