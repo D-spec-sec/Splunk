@@ -1,0 +1,1 @@
+index=windows tag=error Bitlocker drive encryption SourceName=* |table host,Message,dvc_category,signature,source,SourceName |dedup host
