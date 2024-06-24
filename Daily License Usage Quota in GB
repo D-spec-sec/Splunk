@@ -1,0 +1,5 @@
+index=_internal source=*license_usage.log type=Usage 
+| stats sum(b) AS bytes 
+| eval bytes=round(bytes/1024/1024/1024)
+| table bytes
+| rename bytes as "Daily License Quota Used Today (GB)"
