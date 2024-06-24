@@ -1,0 +1,3 @@
+index=windefender EventID IN (5001)
+|lookup windefen_event.csv event_id AS EventID OUTPUT Symbolic_name Message
+|table _time, host, EventID, Message,Symbolic_name Message|stats count
