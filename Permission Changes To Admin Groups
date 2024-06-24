@@ -1,0 +1,8 @@
+index=windows (EventCode=4728 OR EventCode=4729)  (Group_Name="*Domain Admins*" OR Group_Name="*admin*" OR Group_Name="*Delegated_Admins")
+| rename src_user AS "Actioned By", src_user_first AS "First Name" src_user_last AS "Last Name" name as "Action Taken" object AS User_Affected dest AS Domain_Controller Group_Domain AS Domain
+| rex mode=sed field="Account_Name" "s/CN=//g"
+| rex mode=sed field="Account_Name" "s/cn=//g"
+| rex mode=sed field="Account_Name" "s/,OU.*//g"
+| rex mode=sed field="Account_Name" "s/\\\//g"
+| table _time "Actioned By"  "First Name"  "Last Name" Account_Name "Action Taken" User_Affected Group_Name Domain Domain_Controller 
+| sort - _time
