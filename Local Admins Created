@@ -1,0 +1,5 @@
+index=windows EventCode=4735  ```(EventCode=4720 OR EventCode=4728 OR EventCode=4729 OR EventCode=4732)``` 
+| search host!="DC-1" host!="dc-2" object!="sys account*" host!="DCcloud-1" // This line takes out all AD servers, name off your DCs
+| rename src_user AS "Actioned By", src_user_first AS "First Name" src_user_last AS "Last Name" name as "Action Taken" object AS User_Affected dest AS Host Group_Domain AS Domain 
+| table "Actioned By" "First Name" "Last Name" Account_Name "Action Taken" User_Affected Group_Name Domain Host _time 
+| sort - _time
