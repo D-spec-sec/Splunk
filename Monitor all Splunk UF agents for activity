@@ -1,0 +1,9 @@
+index=_internal source=*metrics.log group=tcpin_connections 
+| eval sourceHost=if(isnull(hostname), sourceHost,hostname) 
+| rename connectionType as connectType
+| eval connectType=case(fwdType=="uf","univ fwder", connectType=="cooked" or connectType=="cookedSSL","Splunk fwder", connectType=="raw" or connectType=="rawSSL","legacy fwder")
+| eval version=if(isnull(version),"pre 4.2",version)
+| rename version as Ver 
+| fields connectType sourceIp sourceHost destPort kb tcp_eps tcp_Kprocessed tcp_KBps splunk_server Ver
+| eval Indexer= splunk_server
+| stats avg(tcp_KBps) sum(tcp_eps) sum(tcp_Kprocessed) sum(kb) by connectType sourceIp sourceHost destPort Indexer Ver | dedup sourceIp,sourceHost
