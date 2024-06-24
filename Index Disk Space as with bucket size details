@@ -1,0 +1,22 @@
+| dbinspect index=* 
+| search tsidxState="full" bucketId=*
+    | eval ageDays=round((endEpoch-startEpoch)/84000,10)
+| stats min(startEpoch) as MinStartTime max(startEpoch) as MaxStartTime min(endEpoch) as MinEndTime max(endEpoch) as MaxEndTime max(hostCount) as MaxHosts max(sourceTypeCount) as MaxSourceTypes sum(eventCount) as TotalEvents sum(rawSize) as rawSizeBytes sum(sizeOnDiskMB) as sizeOnDiskBytes values(ageDays) as ageDays dc(bucketId) as countBuckets by index bucketId, state 
+    | where ageDays<90 AND ageDays>0.0000000000 
+    | eval sizeOnDiskBytes=round(sizeOnDiskBytes*pow(1024,2))
+    | eval dailyDisk=round(sizeOnDiskBytes/ageDays,5)
+    | eval dailyRaw=round(rawSizeBytes/ageDays,5)
+    | eval dailyEventCount=round(TotalEvents/ageDays)
+| table index bucketId state dailyDisk ageDays rawSizeBytes, sizeOnDiskBytes TotalEvents PercentSizeReduction dailyRaw dailyEventCount ageDays
+| stats sum(dailyDisk) as dailyBDiskBucket, values(ageDays), sum(dailyRaw) as dailyBRaw sum(dailyEventCount) as dailyEvent, avg(dailyDisk) as dailyBDiskAvg, avg(dailyRaw) as dailyBRawAvg, avg(dailyEventCount) as dailyEventAvg, dc(bucketId) as countBucket by index, state, ageDays
+    | eval bPerEvent=round(dailyBDiskBucket/dailyEvent)
+    | eval bPerEventRaw=round(dailyBRaw/dailyEvent)
+| table dailyBDiskBucket index ageDays dailyEvent bPerEvent dailyBRaw bPerEventRaw state
+    | sort ageDays
+| stats sum(dailyBDiskBucket) as Vol_totDBSize, avg(dailyBDiskBucket) as Vol_avgDailyIndexed, max(dailyBDiskBucket) as Vol_largestVolBucket, avg(dailyEvent) as avgEventsPerDay, avg(bPerEvent) as Vol_avgVolPerEvent, avg(dailyBRaw) as Vol_avgDailyRawVol, avg(bPerEventRaw) as Vol_avgVolPerRawEvent, range(ageDays) as rangeAge by index, state
+    | foreach Vol_* [eval <<FIELD>>=if(<<FIELD>> >= pow(1024,3), tostring(round(<<FIELD>>/pow(1024,3),3))+ " GB", if(<<FIELD>> >= pow(1024,2), tostring(round(<<FIELD>>/pow(1024,2),3))+ " MB", if(<<FIELD>> >= pow(1024,1), tostring(round(<<FIELD>>/pow(1024,2),3))+ " KB", tostring(round(<<FIELD>>)) + " bytes")))]
+    | rename Vol_* as *
+    | eval comb="Index Avg/day: " + avgDailyIndexed + "," + "Raw Avg/day: " + avgDailyRawVol + "," + "DB Size: " + totDBSize + "," + "Per Event Avg/Vol: " + avgVolPerEvent + "," + "Retention Range: " + tostring(round(rangeAge))
+    | eval comb = split(comb,",")
+| xyseries index state comb
+| table index hot warm cold
