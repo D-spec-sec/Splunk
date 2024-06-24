@@ -1,0 +1,3 @@
+index=github sourcetype=httpevent action IN ("repo.download_zip", "git.clone","git.fetch"), member!="*ghe-read"   
+| table  _time, action  member, actor, actor_ip, actor_type, actor_ip, document_id, is_fetch_command, http_path, http-user_agent, org, repo, transport_protocol_name
+| timechart count(action) AS count by repo useother=f
