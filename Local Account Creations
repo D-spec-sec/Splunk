@@ -1,0 +1,1 @@
+index="windows"  EventCode IN (4720,4721) |search user!="Deployment account or local pc account*" |table _time,user,signature,Account_Name,Account_Domain |dedup user
