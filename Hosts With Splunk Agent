@@ -1,0 +1,1 @@
+index="_internal" source="*metrics.log*" group=tcpin_connections|eval  hosts=mvindex(split(hostname,"."),0) | dedup hosts| table hosts,sourceIp,fwdType,guid,version,build,os|stats distinct_count(hosts)
