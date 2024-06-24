@@ -1,0 +1,5 @@
+index=_internal source="*license_usage.log" sourcetype=splunkd 
+| stats sum(b) as Volume by h,st
+| eval GB=round(Volume/1024/1024/1024,5)
+| rename h as Host, st as Sourcetype, GB as "License Used in GB"
+| table Host,Sourcetype,"License Used in GB"|sort - GB | head 5
