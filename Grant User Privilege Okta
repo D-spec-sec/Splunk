@@ -1,0 +1,5 @@
+index=okta  body="Grant user privilege"
+| eval Email=mvindex(split(src_user,"@domain.com"),0) \\ Split your email domain for cleaner tables
+| rename Email as username
+| table _time, src_user_name, body,user,app,debugContext.debugData.privilegeGranted
+,action,event_type_descriptio
