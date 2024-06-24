@@ -1,0 +1,2 @@
+index=_introspection host=*  sourcetype=http_event_collector_metrics
+| table host,component,data.token_name,data.total_bytes_indexed,data.total_bytes_received|dedup host,data.token_name
