@@ -1,0 +1,1 @@
+index="windows" EventCode IN (3260,4741,4743,5861,5152,5719) |dedup user|table _time,SubjectUserName,user,Computer,signature,EventCode
