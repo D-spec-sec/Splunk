@@ -1,0 +1,4 @@
+index="windows" "builtin" NOT ("DC-1" OR "DC-S-2" //Name your DCs OR AND signature!="A security-enabled local group membership was enumerated" 
+| search ```user_group=svc*``` user!="lenovo*" user!="*.*" 
+| table _time,Caller_User_Name,user,signature,_time,EventCode,Caller_Domain,host,user_category,user_group 
+| dedup user
