@@ -1,0 +1,2 @@
+index="windows"  EventCode IN (4720,4721) |search user!="lenovo*" |table _time,user,signature,Target_Domain
+,host |dedup user
