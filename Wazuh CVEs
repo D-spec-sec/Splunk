@@ -1,0 +1,1 @@
+index=wazuh install|mvexpand host |table host,_time,event.rule.description,event.data.vulnerability.status,event.data.vulnerability.severity,event.data.vulnerability.type |dedup host
