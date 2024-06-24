@@ -1,0 +1,6 @@
+index=windefender EventID IN (1151)
+|lookup windefen_event.csv event_id AS EventID OUTPUT Symbolic_name Message
+| rex field=_raw "Last quick scan age'>(?<last_quick_scan_age>\d+).+?Last full scan age'>(?<last_full_scan_age>\d+).+?Last quick scan end time'>(?<last_quick_scan_end>\d{4}-\d{2}-\d{2}).+?Last full scan end time'>(?<last_full_scan_end>\d{4}-\d{2}-\d{2})"
+| rex field=_raw "AV\ssecurity\sintelligence\screation\stime\'\>(?<AVDefDate>.*)\<\/Data\>\<Data\sName\=\'AS\ssecurity"
+|table _time, host, EventID, Message, AV_security_intelligence_version,AVDefDate, Last_AV_security_intelligence_age,last_quick_scan_age,_raw 
+| stats count by AV_security_intelligence_version | dedup AV_security_intelligence_version
