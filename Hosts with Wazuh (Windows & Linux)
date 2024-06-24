@@ -1,0 +1,1 @@
+index=wazuh  |spath|mvexpand host|eval  hosts=mvindex(split(host,".foo.com"),0)| search hosts!="*"|table hosts|dedup hosts|fields hosts|stats distinct_count(hosts)
