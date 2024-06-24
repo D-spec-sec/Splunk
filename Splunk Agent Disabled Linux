@@ -1,0 +1,1 @@
+index=linux AND ("/bin/systemctl*" OR ("/etc/init/*" AND ".override") OR ("service" AND "stop" OR "disable")) AND ("splunk*") process!="cf-agent" NOT ("/bin/systemctl start*" OR "/bin/systemctl status*") | table  _time source host eventtype name process path _raw|stats distinct_count(host) as Splunk_Agent_Status
