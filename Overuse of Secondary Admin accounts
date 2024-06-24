@@ -1,0 +1,1 @@
+index=windows[|inputlookup ADadmins.csv| rename sAMAccountName AS user| fields user| format]  EventCode=4624 AND (Logon_Type=2 OR Logon_Type=10) Logon_Process=User32|table _time, user,dest,tag::app |stats count by user, dest
