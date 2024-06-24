@@ -1,0 +1,1 @@
+index=windows AND (EventCode IN (7040,7041,7039,7042,7043,7038,7036,7037,0,7035, 7031,5,7000,7046) OR "Service Control Manager") AND ( "SplunkForwarder")  NOT EventCode=7045 NOT EventCode=7011 NOT EventCode=7009  | table  _time EventCode host Message |stats distinct_count(host) as Splunk_Agent_Status
