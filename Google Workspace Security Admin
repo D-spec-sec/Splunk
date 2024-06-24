@@ -1,0 +1,1 @@
+index=gws sourcetype!="gws:gmail" AND sourcetype!="gws:reports:drive"   object_attrs="Security Admin"|mvexpand event.parameters{}.name |rename src_user AS GoogleAdmin |table  _time,actor.callerType,actor.email,command,dest,event.name,event.parameters{}.name,result,GoogleAdmin,status,user,object
